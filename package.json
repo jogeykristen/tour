@@ -1,0 +1,19 @@
+{
+  "name": "udemy_node_study",
+  "version": "1.0.0",
+  "description": "",
+  "main": "nodemon server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.5",
+    "nodemon": "^2.0.22",
+    "save": "^2.9.0"
+  }
+}
