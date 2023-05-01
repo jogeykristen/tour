@@ -1,24 +1,52 @@
 const {Company} =require('../database/company');
 const bcrypt = require("bcrypt")
 
+const {myLogger} = require('../middleware/date')
+const express = require('express');
+const app = express();
+
+app.use(myLogger);
+
+app.use((req, res, next) => {
+    req.currentDate = new Date().toISOString();
+    console.log('datesss =', req.currentDate);
+    next();
+  })
+
+const multer = require('multer');
+const upload = multer();
+
 module.exports.signup = async(req,res)=>{
-    saltRounds = 10;
-    console.log("Asdas")
-    const company = await Company.findOne({company_email:req.body.company_email})
-    if(company)return res.status(400).send("Company already registered")
+    
+    const currentsDate = req.currentDate;
+    console.log('date =',req.currentDate);
 
-    const pass = req.body.company_password
-    const hashedPassword =await bcrypt.hash(pass,saltRounds)
+    upload.none()(req, res, async (err) => {
+        if (err) {
+          return res.status(400).send('Invalid form-data');
+    }
 
-    const comp = new Company({
-        company_name:req.body.company_name,
-        company_number:req.body.company_number,
-        company_email:req.body.company_email,
-        company_password:hashedPassword
+        saltRounds = 10;
+        
+        const company = await Company.findOne({company_email:req.body.company_email})
+        if(company)return res.status(400).send("Company already registered")
+
+        const pass = req.body.company_password;
+        
+        const hashedPassword =await bcrypt.hash(pass,saltRounds)
+
+        const comp = new Company({
+            company_name:req.body.company_name,
+            company_number:req.body.company_number,
+            company_email:req.body.company_email,
+            company_password:hashedPassword
+        
+        });
+
+        const result = await comp.save();
+        
+        return res.status(200).send("Company created successfully" )
     });
-
-    const result = await comp.save();
-    return res.status(200).send("Company registeration successfull")
 }
 
 module.exports.login = async(req,res)=>{

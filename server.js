@@ -13,7 +13,6 @@ mongoose.connect(process.env.MONGODB_URL_LOCAL,
 ).then(()=>(console.log("DB connected")))
 .catch((err)=>(console.log("connection failed")));
 
-
 const port = process.env.PORT
 // const server = http.createServer((req, res) => {
 //     res.statusCode = 200;
