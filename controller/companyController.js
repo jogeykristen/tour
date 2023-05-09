@@ -4,39 +4,45 @@ const bcrypt = require("bcrypt")
 const {myLogger} = require('../middleware/date')
 const express = require('express');
 const app = express();
+const path = require('path');
 
 app.use(myLogger);
-
-// app.use((req, res, next) => {
-//     req.currentDate = new Date().toISOString();
-//     console.log('datesss =', req.currentDate);
-//     next();
-//   })
-
-// function myMiddleware(req, res, next) {
-//     // Add current date to req object
-//     req.currentDate = new Date().toDateString();
-//     next();
-//   }
+const fs = require('fs');
 
 const multer = require('multer');
-const upload = multer();
+const upload = multer({ dest: 'uploads/' });
 
 module.exports.signup = async(req,res)=>{
     
     // const currentsDate = req.currentDate;
     console.log('date =',req.currentDate);
 
-    upload.none()(req, res, async (err) => {
+    upload.single('file')(req, res, async (err) => {
         if (err) {
-          return res.status(400).send('Invalid form-data');
-    }
+            return res.status(400).send('Invalid form-data');
+        }
 
         saltRounds = 10;
         const email = req.body.company_email;
         const number = req.body.company_number;
         var emailFormat = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
         regex = /^\d{10}$/;
+
+        if (!req.file) {
+            return res.status(400).send({message: "No file uploaded"});
+        }
+
+
+        // Get the path of the uploaded file
+        const filePath = path.join(process.cwd(), 'uploads', req.file.filename); //****imp study for interview difference __dirname and process.cwd
+        //const filePath = path.join(__dirname, '../uploads/', req.file.filename);
+        
+        console.log("main path =",filePath);
+        
+
+        const fileContents = fs.readFileSync(filePath, 'utf-8');
+        const jsonData = JSON.parse(fileContents);
+        console.log("contents =", jsonData);
         
         if(emailFormat.test(email)){
             if(regex.test(number)){
