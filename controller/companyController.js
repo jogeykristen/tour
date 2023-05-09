@@ -7,11 +7,17 @@ const app = express();
 
 app.use(myLogger);
 
-app.use((req, res, next) => {
-    req.currentDate = new Date().toISOString();
-    console.log('datesss =', req.currentDate);
-    next();
-  })
+// app.use((req, res, next) => {
+//     req.currentDate = new Date().toISOString();
+//     console.log('datesss =', req.currentDate);
+//     next();
+//   })
+
+// function myMiddleware(req, res, next) {
+//     // Add current date to req object
+//     req.currentDate = new Date().toDateString();
+//     next();
+//   }
 
 const multer = require('multer');
 const upload = multer();
@@ -19,7 +25,7 @@ const upload = multer();
 module.exports.signup = async(req,res)=>{
     
     // const currentsDate = req.currentDate;
-    // console.log('date =',req.currentDate);
+    console.log('date =',req.currentDate);
 
     upload.none()(req, res, async (err) => {
         if (err) {
@@ -35,7 +41,7 @@ module.exports.signup = async(req,res)=>{
         if(emailFormat.test(email)){
             if(regex.test(number)){
                 const company = await Company.findOne({company_email:req.body.company_email})
-                if(company)return res.status(400).send("Company already registered")
+                if(company)return res.status(400).send({message:"Company already registered"})
 
                 const pass = req.body.company_password;
                 
@@ -48,7 +54,8 @@ module.exports.signup = async(req,res)=>{
                     company_name:req.body.company_name,
                     company_number:req.body.company_number,
                     company_email:req.body.company_email,
-                    company_password:hashedPassword
+                    company_password:hashedPassword,
+                    date:req.currentDate
                 
                 });
 

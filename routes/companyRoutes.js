@@ -3,11 +3,12 @@ const express = require('express');
 const app = express();
 const {signup, login} = require('../controller/companyController')
 const { checkToken } = require('../authentication/token_validation')
+const {myLogger} = require('../middleware/date')
 
 
 
 router.route('/signup')
-    .post(signup);
+    .post(myLogger,signup);
     
 
 router.route('/login')

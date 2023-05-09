@@ -17,5 +17,9 @@ const Comp = new mongoose.Schema({
         type: String,
         require: true
     },
+    date: {
+        type: String,
+        require: true
+    },
 });
 module.exports.Company = mongoose.model('company', Comp);
