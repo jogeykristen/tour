@@ -21,5 +21,25 @@ const Comp = new mongoose.Schema({
         type: String,
         require: true
     },
+    pdf: {
+        data: Buffer,
+        contentType: String,
+        fileName: {
+            type: String,
+            default: function () {
+                return "pdf_" + Date.now();
+            }
+        }
+    },
+    json: {
+        data: Object,
+        contentType: String,
+        fileName: {
+            type: String,
+            default: function () {
+                return "json_" + Date.now();
+            }
+        }
+    }
 });
 module.exports.Company = mongoose.model('company', Comp);

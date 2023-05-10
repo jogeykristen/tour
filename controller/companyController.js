@@ -43,9 +43,11 @@ module.exports.signup = async(req,res)=>{
         if (!req.files || !req.files['pdf'] || !req.files['json']) {
             return res.status(400).send({message: "Please upload both PDF and JSON files"});
         }
+        const pdfFilePath = path.join(process.cwd(), 'uploads', req.files['pdf'][0].filename);
+        const jsonFilePath = path.join(process.cwd(), 'uploads', req.files['json'][0].filename);
         
         if (req.files['pdf'][0].mimetype === 'application/pdf') {
-            const pdfFilePath = path.join(process.cwd(), 'uploads', req.files['pdf'][0].filename);
+            
             console.log("PDF file path =", pdfFilePath);
             const pdfFileContents = fs.readFileSync(pdfFilePath, 'utf-8');
             const pdfData = pdfFileContents.toString();
@@ -56,7 +58,7 @@ module.exports.signup = async(req,res)=>{
         }
         if (req.files['json'][0].mimetype === 'application/json') {
             // Get the path of the uploaded files
-        const jsonFilePath = path.join(process.cwd(), 'uploads', req.files['json'][0].filename);
+        
         console.log("JSON file path =", jsonFilePath);
         const jsonFileContents = fs.readFileSync(jsonFilePath, 'utf-8');
         const jsonData = JSON.parse(jsonFileContents);
@@ -129,7 +131,17 @@ module.exports.signup = async(req,res)=>{
                     company_number:req.body.company_number,
                     company_email:req.body.company_email,
                     company_password:hashedPassword,
-                    date:req.currentDate
+                    date:req.currentDate,
+                    pdf: {
+                        //data: fs.readFileSync(pdfFilePath),
+                        //contentType: req.files['pdf'][0].mimetype,
+                        fileName: req.files['pdf'][0].originalname,
+                    },
+                    json: {
+                        //data: fs.readFileSync(jsonFilePath),
+                        //contentType: req.files['json'][0].mimetype,
+                        fileName: req.files['json'][0].originalname,
+                    },
                 
                 });
 
